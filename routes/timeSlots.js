@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { getAllTimeSlots } from "../controllers/timeSlotController.js";
+import { createTimeSlot, deleteSlotByID, getAllTimeSlots, updateSlotByID } from "../controllers/timeSlotController.js";
+import checkAdminOrOwner from "../middleware/checkAdminOrOwner.js";
+import verifyUser from "../middleware/verifyUser.js";
 
 const timeSlotRouter = Router()
 
-timeSlotRouter.get('slots', getAllTimeSlots)
-
+timeSlotRouter.get('/slots', getAllTimeSlots)
+timeSlotRouter.post('/addSlot', verifyUser, checkAdminOrOwner, createTimeSlot)
+timeSlotRouter.delete('/slot/:id',verifyUser, checkAdminOrOwner, deleteSlotByID )
+timeSlotRouter.put('/slot/:id',verifyUser, checkAdminOrOwner, updateSlotByID)
 export default timeSlotRouter
