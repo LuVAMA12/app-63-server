@@ -88,28 +88,32 @@ export const addItemsInOrder = async (req, res) => {
                 through: { attributes: []}
             }]  
         })
+
         if(!order) return res.status(404).json('Order not found')
 
-            
-            items.map( async itemId => {
-                
-                const isInOrder = await OrderItem.findOne({
-                    where: {
-                        OrderId: id,
-                        ItemId: itemId
-                    }
-                })
-
-                console.log(itemId)
-                if(isInOrder) {
-                    await isInOrder.increment('quantity')
-                }
-                else {
-                    
-                    await order.addItem(itemId)
+        const itemQuantites = items.reduce((acc, itemId) => {
+            acc[itemId] = (acc[itemId] || 0) + 1;
+            return acc;
+        }, {});
+        
+        console.log(itemQuantites);  
+        
+        const addItems = Object.entries(itemQuantites).map(async ([itemId, quantity]) => {
+        const existingItem = await OrderItem.findOne({
+            where: {
+                OrderId: id,
+                ItemId: itemId
             }
-        })
-    
+        });
+
+        if (existingItem) {
+            await existingItem.increment('quantity', { by: quantity });
+        } else {
+            await order.addItem(itemId)
+        }
+    });
+
+    await Promise.all(addItems);
         
         return res.status(200).json({message : 'Items have been added to the order'})
     } catch (error) {

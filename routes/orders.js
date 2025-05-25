@@ -7,7 +7,7 @@ const orderRouter = Router()
 
 orderRouter.get('/orders', verifyUser, checkAdminOrOwner, getAllOrders)
 orderRouter.get('/order/:id', verifyUser, checkAdminOrOwner, getOrderByID)
-orderRouter.post('/order', createOrder)
+orderRouter.post('/addOrder', createOrder)
 orderRouter.post('/addItems/:id', addItemsInOrder) 
 orderRouter.delete('/order/:id', verifyUser, checkAdminOrOwner, deleteOrderByID) 
 
