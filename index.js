@@ -5,6 +5,7 @@ import { defineAssociation } from './models/associations.js'
 import authRouter from './routes/auth.js'
 import itemRouter from './routes/items.js'
 import orderRouter from './routes/orders.js'
+import reservationRouter from './routes/reservations.js'
 import tableRouter from './routes/tables.js'
 import timeSlotRouter from './routes/timeSlots.js'
 import userRouter from './routes/users.js'
@@ -23,7 +24,7 @@ app.use('/images', express.static('public/images'))
 
 
 // We define the routes that can use in this server
-app.use('/api', userRouter, authRouter, itemRouter, orderRouter, tableRouter, timeSlotRouter)
+app.use('/api', userRouter, authRouter, itemRouter, orderRouter, tableRouter, timeSlotRouter, reservationRouter)
 
 // We connect the server to the db 
 connectDB() 
