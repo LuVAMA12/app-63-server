@@ -17,6 +17,9 @@ const PORT = process.env.PORT || 4001
 //We create a express server
 const app = express()
 
+app.get('/', (req, res) => {
+  res.send('🚀 API is running');
+});
 
 // We make json and form data readable and accessible  
 app.use(express.json())
@@ -30,9 +33,6 @@ app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 app.use('/pdfs', express.static(path.join(__dirname, 'public', 'pdfs')));
 
 
-app.get('/', (req, res) => {
-  res.send('🚀 API is running');
-});
 
 // We define the routes that can use in this server
 app.use('/api', userRouter, authRouter, itemRouter, orderRouter, tableRouter, timeSlotRouter, reservationRouter)

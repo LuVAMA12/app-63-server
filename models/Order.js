@@ -9,6 +9,12 @@ const Order = sequelize.define(
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
+        // status: {
+        //     type: DataTypes.ENUM,
+        //     values:['pending', 'ready', 'cancel'],
+        //     defaultValue: 'pending', 
+        //     allowNull: false
+        // },
         userId: {
             type: DataTypes.UUID,
             references: {

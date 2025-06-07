@@ -30,6 +30,7 @@ const Reservation = sequelize.define(
                 key: 'id'
             }
         },
+        
    } 
 )
 

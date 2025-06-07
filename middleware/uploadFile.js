@@ -8,8 +8,22 @@ const storage = multer.diskStorage({
     },
     //  We rename the upload file 
     filename: function(req, file, cb) {
-      cb(null, file.fieldname + '-' + Date.now() +  '.' + file.originalname.split('.').pop());
+      cb(null, file.fieldname + '-' + Date.now() +  '.' + path.extname(file.originalname))
     }
    })
 
-   export const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg','image/png']
+
+  if(allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(console.error('Invalid file type'), false);
+  }
+}
+
+   export const upload = multer({ 
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+    fileFilter,
+    });
