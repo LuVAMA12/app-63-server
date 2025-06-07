@@ -1,5 +1,7 @@
 import 'dotenv/config'
 import express from "express"
+import path, { dirname } from 'path'
+import { fileURLToPath } from 'url'
 import connectDB from './database/db.js'
 import { defineAssociation } from './models/associations.js'
 import authRouter from './routes/auth.js'
@@ -15,13 +17,22 @@ const PORT = process.env.PORT || 4001
 //We create a express server
 const app = express()
 
+
 // We make json and form data readable and accessible  
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-//We turn the files in the public/images folder into static files
-app.use('/images', express.static('public/images'))
+// get the path of current file
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
+//We turn the files in the public/images folder into static files
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
+app.use('/pdfs', express.static(path.join(__dirname, 'public', 'pdfs')));
+
+
+app.get('/', (req, res) => {
+  res.send('🚀 API is running');
+});
 
 // We define the routes that can use in this server
 app.use('/api', userRouter, authRouter, itemRouter, orderRouter, tableRouter, timeSlotRouter, reservationRouter)
