@@ -1,15 +1,15 @@
-import User from '../models/User.js'
+import Admin from '../models/Admin.js'
 
 const checkAdminOrOwner = async (req, res, next) => {
-    const {id} = req.user
+    const {id} = req.admin
     try {
 
-        const user = await User.findByPk(id, {attributes: { exclude: ['password'] }})
+        const admin = await Admin.findByPk(id, {attributes: { exclude: ['password'] }})
 
-        if(!user) return res.status(403).json(`Account not found`)
+        if(!admin) return res.status(403).json(`Account not found`)
             
-        const isOwner = user.role === 'owner'
-        const isAdmin = user.role === 'admin'
+        const isOwner = admin.role === 'owner'
+        const isAdmin = admin.role === 'admin'
         
         if (isOwner || isAdmin) {
             next()  

@@ -11,6 +11,7 @@ import reservationRouter from './routes/reservations.js'
 import tableRouter from './routes/tables.js'
 import timeSlotRouter from './routes/timeSlots.js'
 import userRouter from './routes/users.js'
+import adminRouter from './routes/admins.js'
 
 const PORT = process.env.PORT || 4001
 
@@ -35,8 +36,8 @@ app.use('/pdfs', express.static(path.join(__dirname, 'public', 'pdfs')));
 
 
 // We define the routes that can use in this server
-app.use('/api', userRouter, authRouter, itemRouter, orderRouter, tableRouter, timeSlotRouter, reservationRouter)
-
+app.use('/api', userRouter, itemRouter, orderRouter, tableRouter, timeSlotRouter, reservationRouter)
+app.use('/admin', authRouter, adminRouter)
 // We connect the server to the db 
 connectDB() 
 
