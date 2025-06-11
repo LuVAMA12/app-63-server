@@ -26,6 +26,40 @@ export const getUserByID = async (req, res) => {
    }
 }
 
+export const createUser = async (req, res) => {
+
+  // We destructured the req.body form
+    const {firstName,lastName,email,phone} = req.body
+   try {
+    // We check if email is already used in the db
+    const user = await User.findOne({
+      where: {
+        email
+      }
+    })
+    if(user) {
+      return res.status(403).json('Email already taken')
+    }
+
+
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      phone
+    })
+   if(!newUser) {
+    return res.status(404).json('User cannot be created')
+   }
+   return  res.status(201).json({message: 'User has been created'})
+   } catch (error) {
+    console.log(error)
+    return res.status(500).json('Internal server error')
+   }
+ }
+
+ 
+
  export const deleteUserByID = async (req, res) => {
    const {id} = req.params
    try {
