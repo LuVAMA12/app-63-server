@@ -4,7 +4,12 @@ import { sequelize } from "../database/db.js";
 const OrderItem = sequelize.define(
     'OrderItem',
     {
-         quantity: {
+        id: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+            primaryKey: true
+        },
+        quantity: {
             type: DataTypes.INTEGER,
             defaultValue: 1
         },
@@ -26,7 +31,7 @@ const OrderItem = sequelize.define(
     },
 )
  
-// await OrderItem.sync({force: true})
+// await OrderItem.sync({alter: true})
 
 export default sequelize.models.OrderItem
 

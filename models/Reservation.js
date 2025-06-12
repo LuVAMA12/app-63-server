@@ -30,12 +30,12 @@ const Reservation = sequelize.define(
                 key: 'id'
             }
         },
-        // status: {
-        //     type: DataTypes.ENUM,
-        //     values:['pending', 'ready', 'cancel'],
-        //     defaultValue: 'pending', 
-        //     allowNull: false
-        // },
+        status: {
+            type: DataTypes.ENUM,
+            values:['reserved','awaiting','confirmed'],
+            defaultValue: 'reserved', 
+            allowNull: false
+        },
    } 
 )
 

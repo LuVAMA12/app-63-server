@@ -28,5 +28,6 @@ import { sequelize } from "../database/db.js"
         }
     }
  )
- 
+
+//  await Admin.sync({alter: true});
 export default sequelize.models.Admin
