@@ -1,5 +1,6 @@
 import { where } from 'sequelize'
 import Admin from '../models/Admin.js'
+import bcrypt from 'bcryptjs'
 
 export const getAllAdmins = async (req, res) => {
     try {
@@ -58,4 +59,32 @@ export const updateRoleByID = async (req, res) => {
         return res.status(500).json('Internal server error')
     }
 }
+
+
+export const updateAdminByID = async (req, res) => {
+  const { id } = req.admin;
+  const { email, password } = req.body;
+  try {
+    const admin = await Admin.findOne({
+      where: {
+        id,
+      },
+      attributes: { exclude: ["password", "forgotten_password"] },
+    });
+    if (!admin) return res.status(404).json(" Admin not found");
+    const salt = await bcrypt.genSalt()
+    const hashedPassword= await bcrypt.hash(password, salt)
+    
+    const updatedAdmin = await admin.update({
+      email: email || admin.email,
+      password: hashedPassword || admin.password,
+    });
+    const saveAdmin = await admin.save();
+    
+    return res.status(202).json(saveAdmin);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal server error");
+  }
+};
 

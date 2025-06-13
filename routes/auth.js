@@ -1,7 +1,7 @@
 import { Router } from "express";
-import checkOwner from "../middleware/checkOwner.js";
 import verifyUser from "../middleware/verifyUser.js";
 import { createAdmin, createOwner, loginAdmin } from "../controllers/authController.js";
+import { checkOwner } from "../middleware/checkAutorizations.js";
 
 const authRouter = Router()
 

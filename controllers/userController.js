@@ -48,24 +48,6 @@ export const createOrFindUser = async ({ firstName, lastName, email, phone }) =>
   }
 };
 
-export const deleteUserByID = async (req, res) => {
-  const { id } = req.params;
-  try {
-    // We delete the user or admin
-    const deleteUser = await User.destroy({
-      where: {
-        id,
-      },
-    });
-    if (!deleteUser) {
-      return res.status(404).json(`Account not found`);
-    }
-    return res.status(200).json(`Account has been deleted`);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json("Internal server error");
-  }
-};
 
 export const updateUserByID = async (req, res) => {
   const { id } = req.params;

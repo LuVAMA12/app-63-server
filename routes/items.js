@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { createItem, deleteItemByID, getAllItems, getItemByID, updateItemByID } from "../controllers/itemController.js";
-import checkAdminOrOwner from "../middleware/checkAdminOrOwner.js";
 import { upload } from "../middleware/uploadFile.js";
 import verifyUser from "../middleware/verifyUser.js";
+import { checkAdminOrOwner } from "../middleware/checkAutorizations.js";
 
 const itemRouter = Router()
 

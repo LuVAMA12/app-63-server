@@ -56,3 +56,46 @@ export const checkAuthorisedUpdate = async (req, res, next) => {
     }
 }
 
+export const checkAdminOrOwner = async (req, res, next) => {
+    const {id} = req.admin
+    try {
+
+        const admin = await Admin.findByPk(id, {attributes: ['role'] })
+
+        if(!admin) return res.status(403).json(`Access denied: you're not admin`)
+            
+        const isOwner = admin.role === 'owner'
+        const isAdmin = admin.role === 'admin'
+        
+        if (isOwner || isAdmin) {
+            next()  
+        }else {
+            return res.status(403).json(`Access denied: you're not admin`)
+           }
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json('Internal server error')
+    }
+}
+
+export const checkOwner = async (req, res, next ) => {
+    try {
+        if (!req.admin) {
+            const admins = await Admin.findAll()
+            if (admins.length === 0) {
+                return (
+                    req.first= 'owner',
+                    next())
+            }
+        }
+        else {
+            const {role} = req.admin
+            if ( role !== 'owner' )  return res.status(405).json('Access refused: owner only')
+            }
+        next()
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json('Internal server error')
+    }
+    }
