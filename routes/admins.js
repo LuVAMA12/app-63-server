@@ -3,7 +3,7 @@ import { getAdminByID, getAllAdmins, updateAdminByID } from "../controllers/admi
 import { createAdmin } from "../controllers/authController.js"
 import verifyAdmin from "../middleware/verifyUser.js"
 import { Router } from "express"
-import { checkAccountOwner, checkOwner } from "../middleware/checkAutorizations.js"
+import { checkOwner } from "../middleware/checkAutorizations.js"
 
 const adminRouter = Router()
 
