@@ -74,13 +74,12 @@ export const createAdmin = async (req, res) => {
 export const loginAdmin = async (req, res) => {
   // We destructured the information from the req.body form 
   const {email, password} = req.body
-  console.log(req.body)
   try {
-
+    
     //We verify if the email already exist in the db and if it's admin or owner
     const admin = await Admin.findAll({where: { email }})
     if(admin.length < 1) return res.status(401).json(`Email or password invalid`)
-    if (admin[0].role === 'admin') return res.status(401).json(`Acces denied: admin only`)
+    if (admin[0].role !== 'admin' && admin[0].role !== 'owner' ) return res.status(401).json(`Acces denied: admin only`)
       
       // We compare the password hash value in the req.body with the admin's password saved in the db
       const comparePassword = await bcrypt.compare(password, admin[0].password)
@@ -88,7 +87,7 @@ export const loginAdmin = async (req, res) => {
       
       //if all checks are correct, we create a token to confirm the admin's connection
       const token = await jwt.sign({id : admin[0].id, role: admin[0].role}, JWT_SECRET)
-    return res.status(200).json({message: `Welcome to ${admin[0].firstName}`, token})
+    return res.status(200).json({message: `Welcome to ${admin[0].role}`, token})
     
   } catch (error) {
     console.log(error)
