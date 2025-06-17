@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createTimeSlot, deleteSlotByID, getAllTimeSlots, updateSlotByID } from "../controllers/timeSlotController.js";
-import checkAdminOrOwner from "../middleware/checkAdminOrOwner.js";
 import verifyUser from "../middleware/verifyUser.js";
+import { checkAdminOrOwner } from "../middleware/checkAutorizations.js";
 
 const timeSlotRouter = Router()
 

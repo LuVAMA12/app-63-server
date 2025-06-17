@@ -16,10 +16,10 @@ export const defineAssociation = async () => {
 
     await User.hasMany(Reservation,{ foreignKey: 'userId'})
     await Reservation.belongsTo(User,{ foreignKey: 'userId'})
-    await TimeSlot.hasMany(Reservation, {target: 'timeSlotId'})
-    await Reservation.belongsTo(TimeSlot, {target: 'timeSlotId'})
-    await Table.hasMany(Reservation, {target: 'tableId'})
-    await Reservation.belongsTo(Table, {target: 'tableId'})
+    await TimeSlot.hasMany(Reservation, {foreignKey: 'timeSlotId'})
+    await Reservation.belongsTo(TimeSlot, {foreignKey: 'timeSlotId'})
+    await Table.hasMany(Reservation, {foreignKey: 'tableId'})
+    await Reservation.belongsTo(Table, {foreignKey: 'tableId'})
 }
 
 // await sequelize.sync({ alter: true });

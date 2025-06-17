@@ -1,59 +1,68 @@
 import Reservation from "../models/Reservation.js"
+import Table from "../models/Table.js"
+import TimeSlot from "../models/TimeSlot.js"
 import User from "../models/User.js"
+import { searchAvailableTable } from "./tableController.js"
+import { createOrFindUser } from "./userController.js"
 
 
 export const getAllReservations = async (req, res) => {
-   try {
-         const reservations = await Reservation.findAll()
-         if(reservations.length < 1) return res.status(404).json('No Reservation found yet')
-         return res.status(200).json(reservations)
-     } catch (error) {
-         console.log(error)
-         return res.status(500).json('Internal server error')
-     }
+    try {
+        const reservations = await Reservation.findAll({
+            include : [{
+                model: User,
+                attributes: ['firstName','lastName','email','phone']
+            },
+            {
+                model: Table,
+                attributes: ['numberTable','location','capacity']
+            },
+            {
+                model: TimeSlot,
+                attributes: ['date','time']
+            }],
+            order: [['createdAt', 'DESC']],
+            
+        })
+        if(reservations.length < 1) return res.status(404).json('No Reservation found yet')
+            return res.status(200).json(reservations)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json('Internal server error')
+    }
 }
 
 export const createReservation =  async (req, res) => {
-    const {firstName, lastName, email, phone, timeSlotId, tableId } = req.body
+    const {timeSlotId} = req.body;
     try { 
-         let user = await User.findOne({
-                    where: {
-                        email
-                    }
-                })
-
-        if(user) {
-             user = user.id
-        } else {
-            const newUser = await User.create({
-                firstName,
-                lastName,
-                email,
-                phone
-            })
-            if(!newUser) {
-                return res.status(400).json('User cannot be created')
-            }
-             user = newUser.id
+        //get the user's informations, search if it's already exist, create a new if not, return user.id
+        const userId = await createOrFindUser(req.body)
+        //verify if user exist, otherwise he's return a error message
+        if (!userId) {
+            return res.status(400).json("User cannot be created");
         }
-        console.log(user)
+        const tableId = await searchAvailableTable(req.body)
+        
+        if (!tableId) {
+            return res.status(400).json("No table available");
+        }
+        
         const reservation = await Reservation.findOne({
-                where: {
-                        timeSlotId, 
-                        tableId
-                    }
-                })
-                if(reservation) return res.status(404).json('reservation already taken')
-        let newReservation = await Reservation.create({
-           userId: user, 
-           timeSlotId, 
-           tableId
+            where: {
+                timeSlotId, 
+                tableId
+            }
+        })
+        if(reservation) return res.status(404).json('reservation already taken')
+            let newReservation = await Reservation.create({
+            userId, 
+            timeSlotId, 
+            tableId
         })
         if(!newReservation) {
             return res.status(404).json('Reservation cannot be created')
         }
         newReservation = newReservation.id
-        console.log(newReservation)
         return  res.status(201).json({message: 'Reservation has been created', newReservation})
     } catch (error) {
         console.log(error)
@@ -78,28 +87,28 @@ export const deleteReservationByID = async (req, res) => {
 }
 
 export const updateReservationByID = async (req, res) => {
-   const {id} = req.params
-   const {userId, timeSlotId, tableId }= req.body
-   try {
-
-      const reservation = await Reservation.findOne({
-         where : {
-            id
-         }
-      })
-      if(!reservation) return res.status(404).json(' Reservation not found')
-
-       
-      const updatedReservation = await reservation.update({
-        userId: userId || reservation.userId,
-        timeSlotId: timeSlotId || reservation.timeSlotId,
-        tableId: tableId || reservation.tableId
-      })
-      const saveReservation = await Reservation.save()
-      
-      return res.status(202).json(saveReservation)
-   } catch (error) {
-      console.log(error)
-      return res.status(500).json('Internal server error')
-   }
- }
+    const {id} = req.params
+    const {userId, timeSlotId, tableId }= req.body
+    try {
+        
+        const reservation = await Reservation.findOne({
+            where : {
+                id
+            }
+        })
+        if(!reservation) return res.status(404).json(' Reservation not found')
+            
+        
+        const updatedReservation = await reservation.update({
+            userId: userId || reservation.userId,
+            timeSlotId: timeSlotId || reservation.timeSlotId,
+            tableId: tableId || reservation.tableId
+        })
+        const saveReservation = await Reservation.save()
+        
+        return res.status(202).json(saveReservation)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json('Internal server error')
+    }
+}

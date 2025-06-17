@@ -14,7 +14,9 @@ const TimeSlot = sequelize.define(
             allowNull: false
         },
         time : {
-            type: DataTypes.TIME
+            type: DataTypes.TIME,
+            allowNull: false
+
         }
     }
 )

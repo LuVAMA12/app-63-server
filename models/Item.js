@@ -29,9 +29,6 @@ const Item = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        quantity: {
-            type: DataTypes.INTEGER,
-        }
     }
 )
 

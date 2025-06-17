@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createTable, deleteTableByID, getAllTables, updateTableByID } from "../controllers/tableController.js";
-import checkAdminOrOwner from "../middleware/checkAdminOrOwner.js";
 import verifyUser from "../middleware/verifyUser.js";
+import { checkAdminOrOwner } from "../middleware/checkAutorizations.js";
 
 const tableRouter = Router()
 

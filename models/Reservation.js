@@ -4,7 +4,7 @@ import { sequelize } from "../database/db.js";
 const Reservation = sequelize.define(
     'Reservation',
     {
-         id: {
+        id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
@@ -30,8 +30,13 @@ const Reservation = sequelize.define(
                 key: 'id'
             }
         },
-        
-   } 
+        status: {
+            type: DataTypes.ENUM,
+            values:['reserved','awaiting','confirmed'],
+            defaultValue: 'reserved', 
+            allowNull: false
+        },
+    } 
 )
 
 // await Reservation.sync({alter: true});

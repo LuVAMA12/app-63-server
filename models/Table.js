@@ -9,7 +9,7 @@ const Table = sequelize.define(
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
-        numberPlaces: {
+        capacity: {
             type: DataTypes.TINYINT(1),
             allowNull: false
         },
