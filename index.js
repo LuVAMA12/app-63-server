@@ -12,7 +12,7 @@ import tableRouter from './routes/tables.js'
 import timeSlotRouter from './routes/timeSlots.js'
 import userRouter from './routes/users.js'
 import adminRouter from './routes/admins.js'
-
+import cors from 'cors'
 const PORT = process.env.PORT || 4001
 
 //We create a express server
@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 // We make json and form data readable and accessible  
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-
+app.use(cors())
 // get the path of current file
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
