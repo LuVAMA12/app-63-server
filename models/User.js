@@ -31,5 +31,4 @@ const User = sequelize.define(
     }
 ) 
 
-// await sequelize.sync({alter: true})
 export default sequelize.models.User

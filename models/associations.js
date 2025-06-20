@@ -22,4 +22,3 @@ export const defineAssociation = async () => {
     await Reservation.belongsTo(Table, {foreignKey: 'tableId'})
 }
 
-// await sequelize.sync({ alter: true });

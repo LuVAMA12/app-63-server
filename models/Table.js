@@ -25,5 +25,4 @@ const Table = sequelize.define(
     }
 )
 
-// await Table.sync({alter: true});
 export default sequelize.models.Table
