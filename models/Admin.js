@@ -9,6 +9,14 @@ import { sequelize } from "../database/db.js"
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
+        firstName: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        lastName: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         email: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -29,5 +37,4 @@ import { sequelize } from "../database/db.js"
     }
  )
 
-//  await Admin.sync({alter: true});
 export default sequelize.models.Admin

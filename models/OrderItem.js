@@ -31,7 +31,6 @@ const OrderItem = sequelize.define(
     },
 )
  
-// await OrderItem.sync({alter: true})
 
 export default sequelize.models.OrderItem
 

@@ -63,7 +63,7 @@ export const updateRoleByID = async (req, res) => {
 
 export const updateAdminByID = async (req, res) => {
   const { id } = req.admin;
-  const { email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   try {
     const admin = await Admin.findOne({
       where: {
@@ -76,6 +76,8 @@ export const updateAdminByID = async (req, res) => {
     const hashedPassword= await bcrypt.hash(password, salt)
     
     const updatedAdmin = await admin.update({
+      firstName: firstName || admin.firstName,
+      lastName: lastName || admin.lastName,
       email: email || admin.email,
       password: hashedPassword || admin.password,
     });

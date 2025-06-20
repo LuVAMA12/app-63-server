@@ -39,5 +39,4 @@ const Reservation = sequelize.define(
     } 
 )
 
-// await Reservation.sync({alter: true});
 export default sequelize.models.Reservation

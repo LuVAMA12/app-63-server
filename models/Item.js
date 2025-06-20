@@ -32,7 +32,6 @@ const Item = sequelize.define(
     }
 )
 
-// await Item.sync({ alter: true });
 export default sequelize.models.Item
 
 

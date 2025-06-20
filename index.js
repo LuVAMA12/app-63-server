@@ -42,7 +42,6 @@ app.use('/admin', authRouter, adminRouter)
 connectDB() 
 
 defineAssociation()
-// await sequelize.sync({ alter: true });
 
 //  we start the server
 app.listen(PORT, () => {

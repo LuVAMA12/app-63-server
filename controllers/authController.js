@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET
 export const createAdmin = async (req, res) => {
     const firstAdmin = req.first
   // We destructured the req.body form
-    const {email,password} = req.body
+    const {firstName, lastName, email,password} = req.body
    try {
     // We check if email is already used in the db
     const admin = await Admin.findOne({
@@ -22,6 +22,8 @@ export const createAdmin = async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
     const newAdmin = await Admin.create({
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       role: firstAdmin || 'admin'
@@ -35,41 +37,6 @@ export const createAdmin = async (req, res) => {
     return res.status(500).json('Internal server error')
    }
  }
-
- export const createOwner = async (req, res) => {
-
-  // We destructured the req.body form
-    const {email,password} = req.body
-   try {
-    // We check if email is already used in the db
-    const owner = await Admin.findOne({
-      where: {
-        email
-      }
-    })
-    if(owner) {
-      return res.status(403).json('Email already taken')
-    }
-
-    // we hash the password before registering the admin in the db
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
-    const newOwner = await Admin.create({
-      email,
-      password: hashedPassword,
-      role: 'owner'
-    })
-   if(!newOwner) {
-    return res.status(404).json('Owner cannot be created')
-   }
-   return  res.status(201).json({message: 'Owner has been created'})
-   } catch (error) {
-    console.log(error)
-    return res.status(500).json('Internal server error')
-   }
- }
-
-
 
 export const loginAdmin = async (req, res) => {
   // We destructured the information from the req.body form 

@@ -22,7 +22,6 @@ const TimeSlot = sequelize.define(
 )
 
 
-// await TimeSlot.sync({ force: true });
 
 export default sequelize.models.TimeSlot
 
