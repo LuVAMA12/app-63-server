@@ -57,7 +57,8 @@ export const createReservation =  async (req, res) => {
             let newReservation = await Reservation.create({
             userId, 
             timeSlotId, 
-            tableId
+            tableId,
+            numberOfPeople
         })
         if(!newReservation) {
             return res.status(404).json('Reservation cannot be created')
@@ -88,7 +89,7 @@ export const deleteReservationByID = async (req, res) => {
 
 export const updateReservationByID = async (req, res) => {
     const {id} = req.params
-    const {userId, timeSlotId, tableId }= req.body
+    const {userId, timeSlotId, tableId, numberOfPeople }= req.body
     try {
         
         const reservation = await Reservation.findOne({
@@ -102,7 +103,8 @@ export const updateReservationByID = async (req, res) => {
         const updatedReservation = await reservation.update({
             userId: userId || reservation.userId,
             timeSlotId: timeSlotId || reservation.timeSlotId,
-            tableId: tableId || reservation.tableId
+            tableId: tableId || reservation.tableId,
+            numberOfPeople: numberOfPeople || reservation.numberOfPeople
         })
         const saveReservation = await Reservation.save()
         
