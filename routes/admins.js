@@ -1,9 +1,7 @@
-import jwt from "jsonwebtoken"
-import { getAdminByID, getAllAdmins, updateAdminByID } from "../controllers/adminController.js"
-import { createAdmin } from "../controllers/authController.js"
-import verifyAdmin from "../middleware/verifyUser.js"
 import { Router } from "express"
-import { checkAccountOwner, checkOwner } from "../middleware/checkAutorizations.js"
+import { getAdminByID, getAllAdmins, updateAdminByID } from "../controllers/adminController.js"
+import { checkOwner } from "../middleware/checkAutorizations.js"
+import verifyAdmin from "../middleware/verifyAdmin.js"
 
 const adminRouter = Router()
 

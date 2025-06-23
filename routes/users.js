@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { getAllUsers, getUserByID, updateUserByID } from "../controllers/userController.js";
-import verifyUser from "../middleware/verifyUser.js";
 import { checkAdminOrOwner } from "../middleware/checkAutorizations.js";
+import verifyAdmin from "../middleware/verifyAdmin.js";
 
 
 const userRouter = Router()
 
 // We define the paths to get our methods 
-userRouter.get('/users', verifyUser, checkAdminOrOwner, getAllUsers)
-userRouter.get('/user/:id', verifyUser, checkAdminOrOwner, getUserByID)
-userRouter.put('/user/:id', verifyUser, checkAdminOrOwner,  updateUserByID)
+userRouter.get('/users', verifyAdmin, checkAdminOrOwner, getAllUsers)
+userRouter.get('/user/:id', verifyAdmin, checkAdminOrOwner, getUserByID)
+userRouter.put('/user/:id', verifyAdmin, checkAdminOrOwner,  updateUserByID)
 
 export default userRouter
