@@ -31,6 +31,30 @@ export const getAllReservations = async (req, res) => {
         return res.status(500).json('Internal server error')
     }
 }
+export const getReservationByID = async (req, res) => {
+    const {id} = req.params
+    try {
+        const reservation = await Reservation.findByPk(id,{
+             include : [{
+                model: User,
+                attributes: ['firstName','lastName','email','phone']
+            },
+            {
+                model: Table,
+                attributes: ['numberTable','location','capacity']
+            },
+            {
+                model: TimeSlot,
+                attributes: ['date','time']
+            }],
+        })
+        if(!reservation) return res.status(404).json('Reservation not found')
+        return res.status(200).json(reservation)  
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json('Internal server error')
+    }
+}
 
 export const createReservation =  async (req, res) => {
     const {timeSlotId} = req.body;
