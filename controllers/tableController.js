@@ -5,7 +5,7 @@ import Table from "../models/Table.js"
 export const getAllTables = async (req, res) => {
     try {
         const tables = await Table.findAll()
-        if(tables.length < 1) return res.status(404).json('No table found yet')
+        if(!tables) return res.status(404).json('Table not found')
             return res.status(200).json(tables)
     } catch (error) {
         console.log(error)

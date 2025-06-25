@@ -1,6 +1,5 @@
-import { where } from 'sequelize'
-import Admin from '../models/Admin.js'
 import bcrypt from 'bcryptjs'
+import Admin from '../models/Admin.js'
 
 export const getAllAdmins = async (req, res) => {
     try {
@@ -9,7 +8,8 @@ export const getAllAdmins = async (req, res) => {
                 exclude : ['password', 'forgotten_password']
             }
         })    
-        if(admins.length < 1) return res.status(404).json(`No Admin found yet`)
+        if(!admins) return res.status(404).json('Admin not found')
+
         return res.status(200).json(admins)
     } catch (error) {
         console.log(error)

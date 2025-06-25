@@ -24,7 +24,7 @@ export const getAllReservations = async (req, res) => {
             order: [['createdAt', 'DESC']],
             
         })
-        if(reservations.length < 1) return res.status(404).json('No Reservation found yet')
+        if(!reservations) return res.status(404).json('Reservation not found')
             return res.status(200).json(reservations)
     } catch (error) {
         console.log(error)
