@@ -57,7 +57,7 @@ export const getReservationByID = async (req, res) => {
 }
 
 export const createReservation =  async (req, res) => {
-    const {timeSlotId} = req.body;
+    const {timeSlotId, numberOfPeople, date} = req.body;
     try { 
         //get the user's informations, search if it's already exist, create a new if not, return user.id
         const userId = await createOrFindUser(req.body)
@@ -82,7 +82,8 @@ export const createReservation =  async (req, res) => {
             userId, 
             timeSlotId, 
             tableId,
-            numberOfPeople
+            numberOfPeople,
+            date
         })
         if(!newReservation) {
             return res.status(404).json('Reservation cannot be created')
@@ -130,7 +131,6 @@ export const updateReservationByID = async (req, res) => {
             tableId: tableId || reservation.tableId,
             numberOfPeople: numberOfPeople || reservation.numberOfPeople
         })
-        const saveReservation = await Reservation.save()
         
         return res.status(202).json(saveReservation)
     } catch (error) {
@@ -138,3 +138,4 @@ export const updateReservationByID = async (req, res) => {
         return res.status(500).json('Internal server error')
     }
 }
+

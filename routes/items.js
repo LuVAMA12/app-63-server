@@ -8,7 +8,7 @@ const itemRouter = Router()
 
 itemRouter.get('/items', getAllItems)
 itemRouter.get('/item/:id', getItemByID)
-itemRouter.post('/item',verifyAdmin, checkAdminOrOwner, upload.single('image'),createItem)
+itemRouter.post('/addItem',verifyAdmin, checkAdminOrOwner, upload.single('image'),createItem)
 itemRouter.delete('/item/:id',verifyAdmin, checkAdminOrOwner, deleteItemByID)
 itemRouter.put('/item/:id',verifyAdmin, checkAdminOrOwner, upload.single('image'),updateItemByID)
 

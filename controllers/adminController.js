@@ -50,9 +50,24 @@ export const getAdminByID = async (req, res) => {
  }
 
 export const updateRoleByID = async (req, res) => {
-    const {id} = req.params
-    try {
-        const admin = await Admin.findByPk(id,{ attributes: {  exclude : ['password', 'forgotten_password'] }})
+     const { id } = req.params;
+     const {role} = req.body
+  try {
+    const admin = await Admin.findOne({
+      where: {
+        id,
+      },
+      attributes: { exclude: ["password", "forgotten_password"] },
+    });
+    if (!admin) return res.status(404).json(" Admin not found");
+    
+    const updatedAdmin = await admin.update({
+      role: role || admin.role,
+    });
+    const saveAdmin = await admin.save();
+    
+    return res.status(202).json(saveAdmin);
+
 
     } catch (error) {
         console.log(error)
@@ -62,7 +77,7 @@ export const updateRoleByID = async (req, res) => {
 
 
 export const updateAdminByID = async (req, res) => {
-  const { id } = req.admin;
+  const { id } = req.params;
   const { firstName, lastName, email, password } = req.body;
   try {
     const admin = await Admin.findOne({
@@ -72,9 +87,11 @@ export const updateAdminByID = async (req, res) => {
       attributes: { exclude: ["password", "forgotten_password"] },
     });
     if (!admin) return res.status(404).json(" Admin not found");
-    const salt = await bcrypt.genSalt()
-    const hashedPassword= await bcrypt.hash(password, salt)
-    
+    let hashedPassword;
+    if (password){
+      const salt = await bcrypt.genSalt(10)
+      hashedPassword = await bcrypt.hash(password, salt)
+    }
     const updatedAdmin = await admin.update({
       firstName: firstName || admin.firstName,
       lastName: lastName || admin.lastName,

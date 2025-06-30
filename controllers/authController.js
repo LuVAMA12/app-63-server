@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 import Admin from '../models/Admin.js'
 const JWT_SECRET = process.env.JWT_SECRET
 
@@ -53,7 +53,7 @@ export const loginAdmin = async (req, res) => {
       if(!comparePassword)  return res.status(401).json(`Email or password invalid`)
       
       //if all checks are correct, we create a token to confirm the admin's connection
-      const token = await jwt.sign({id : admin[0].id, role: admin[0].role}, JWT_SECRET)
+      const token = await jwt.sign({id : admin[0].id, role: admin[0].role}, JWT_SECRET, { expiresIn: '2h' })
     return res.status(200).json({message: `Welcome to ${admin[0].role}`, token})
     
   } catch (error) {

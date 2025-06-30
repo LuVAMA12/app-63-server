@@ -1,3 +1,7 @@
+import { Op } from "sequelize";
+import { sequelize } from "../database/db.js";
+import Reservation from "../models/Reservation.js";
+import Table from "../models/Table.js";
 import TimeSlot from "../models/TimeSlot.js";
 
 export const getAllTimeSlots = async (req, res) => {
@@ -10,21 +14,21 @@ export const getAllTimeSlots = async (req, res) => {
         console.log(error);
         return res.status(500).json("Internal server error");
     }
-    };
+};
 
 export const createTimeSlot = async (req, res) => {
-    const { date, time } = req.body;
+    const { startTime, endTime } = req.body;
     try {
         const slot = await TimeSlot.findOne({
         where: {
-            date,
-            time,
+            startTime,
+            endTime,
         },
         });
         if (slot) return res.status(404).json("the time slot already exist");
         const newSlot = await TimeSlot.create({
-        date,
-        time,
+        startTime,
+        endTime,
         });
         return res
         .status(201)
@@ -69,6 +73,45 @@ export const updateSlotByID = async (req, res) => {
         const saveSlot = await slot.save();
 
         return res.status(202).json(saveSlot);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json("Internal server error");
+    }
+};
+
+export const getAvailablesTimeSlots = async (req, res) => {
+    const { date } = req.body;
+
+    if (!date) {
+        return res.status(400).json({ error: "date is required" });
+    }
+
+    try {
+        //we count number of tables
+        const totalTables = await Table.count();
+
+        //we want reserved time slots
+        const fullyReservedSlotIds = await Reservation.findAll({
+        attributes: ["timeSlotId"],
+        where: { date },
+        group: ["timeSlotId"],
+        // We count compare number of table with number of timeslots on a defined date. If the numbers are differents, sequelize return the time slot id.
+        having: sequelize.literal(`COUNT(tableId) = ${totalTables}`),
+        raw: true,
+        });
+
+        const reservedSlotIds = fullyReservedSlotIds.map((r) => r.timeSlotId);
+
+        const availableSlots = await TimeSlot.findAll({
+        where: {
+            id: {
+            [Op.notIn]: reservedSlotIds,
+            },
+        },
+        order: [["startTime", "ASC"]],
+        });
+        if (availableSlots.length === 0) return res.status(200).json([]);
+        return res.status(200).json(availableSlots);
     } catch (error) {
         console.log(error);
         return res.status(500).json("Internal server error");

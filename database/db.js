@@ -10,6 +10,7 @@ const PASSWORD = process.env.PASSWORD;
 export const sequelize = new Sequelize( DATABASE, USER, PASSWORD, {
     host: HOST,
     dialect: 'mysql',
+    // logging: false,
 }) 
  
 const connectDB = async () => {

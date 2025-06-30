@@ -4,7 +4,7 @@ export const getAllItems = async (req, res) => {
     try {
         //We search all created items and return them
         const items = await Item.findAll();
-        if (!reservations) return res.status(404).json("Reservation not found");
+        if (!items) return res.status(404).json("Items not found");
 
         return res.status(200).json(items);
     } catch (error) {
