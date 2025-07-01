@@ -19,7 +19,7 @@ export const getAllReservations = async (req, res) => {
             },
             {
                 model: TimeSlot,
-                attributes: ['date','time']
+                attributes: ['startTime','endTime']
             }],
             order: [['createdAt', 'DESC']],
             
@@ -45,7 +45,7 @@ export const getReservationByID = async (req, res) => {
             },
             {
                 model: TimeSlot,
-                attributes: ['date','time']
+                attributes: ['startTime','endTime']
             }],
         })
         if(!reservation) return res.status(404).json('Reservation not found')
