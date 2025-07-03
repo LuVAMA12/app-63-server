@@ -1,5 +1,6 @@
 import Item from "../models/Item.js";
 import Order from "../models/Order.js";
+import OrderItem from "../models/OrderItem.js";
 import User from "../models/User.js";
 
 export const getAllOrders = async (req, res) => {
@@ -15,6 +16,7 @@ export const getAllOrders = async (req, res) => {
           through: { attributes: ["quantity"] },
         },
       ],
+      order: [["createdAt", "DESC"], [Item, OrderItem, "quantity", "DESC"]],
     });
     if (!orders) return res.status(404).json("Order not found");
     return res.status(200).json(orders);

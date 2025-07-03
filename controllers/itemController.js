@@ -38,8 +38,8 @@ export const createItem = async (req, res) => {
         title,
         description,
         image: req.file
-            ? "public/images/" + req.file.filename
-            : "public/images/default-image.png",
+            ? "images/" + req.file.filename
+            : "images/default-image.png",
         price,
         category,
         });
@@ -90,7 +90,7 @@ export const updateItemByID = async (req, res) => {
         price: price || item.price,
         category: category || item.category,
         quantity: quantity || item.quantity,
-        image: req.file ? "public/images/" + req.file.filename : item.image,
+        image: req.file ? "images/" + req.file.filename : item.image,
         });
         const saveItem = await item.save();
 
