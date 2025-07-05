@@ -54,29 +54,24 @@ export const deleteSlotByID = async (req, res) => {
         return res.status(500).json("Internal server error");
     }
 };
-
 export const updateSlotByID = async (req, res) => {
-    const { id } = req.params;
-    const { date, time } = req.body;
-    try {
-        const slot = await TimeSlot.findOne({
-        where: {
-            id,
-        },
-        });
-        if (!slot) return res.status(404).json(" Slot not found");
+  const { id } = req.params;
+  const { startTime, endTime } = req.body;
 
-        const updatedSlot = await slot.update({
-        date: date || slot.date,
-        time: time || slot.time,
-        });
-        const saveSlot = await slot.save();
+  try {
+    const slot = await TimeSlot.findByPk(id);
+    if (!slot) return res.status(404).json("Slot not found");
 
-        return res.status(202).json(saveSlot);
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json("Internal server error");
-    }
+    const updatedSlot = await slot.update({
+      startTime: startTime ?? slot.startTime,
+      endTime: endTime ?? slot.endTime,
+    });
+
+    return res.status(202).json(updatedSlot);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json("Internal server error");
+  }
 };
 
 export const getAvailablesTimeSlots = async (req, res) => {

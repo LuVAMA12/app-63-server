@@ -28,5 +28,4 @@ const Order = sequelize.define("Order", {
     },
 });
 
-await Order.sync({alter:true})
 export default sequelize.models.Order;

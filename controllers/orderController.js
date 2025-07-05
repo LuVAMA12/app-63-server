@@ -109,26 +109,24 @@ export const updateOrderById = async (req, res) => {
 
     const user = await User.findByPk(order.userId);
     if (user) {
-      await user.update({
-        firstName: firstName || user.firstName,
-        lastName: lastName || user.lastName,
-        email: email || user.email,
-        phone: phone || user.phone,
+       await user.update({
+        firstName: firstName ?? user.firstName,
+        lastName: lastName ?? user.lastName,
+        email: email ?? user.email,
+        phone: phone ?? user.phone,
       });
     }
 
-    if (items && items.length > 0) {
+    if (Array.isArray(items) && items.length > 0) {
       await order.setItems([]);
       await addItemsToOrder(order, items);
     }
 
-    const updatedOrder = await Order.findByPk(id, {
+     const updatedOrder = await Order.findByPk(id, {
       include: [
         {
           model: Item,
-          through: {
-            attributes: ["quantity"],
-          },
+          through: { attributes: ["quantity"] },
         },
         {
           model: User,
@@ -136,9 +134,10 @@ export const updateOrderById = async (req, res) => {
         },
       ],
     });
+
     return res
       .status(200)
-      .json({ message: "Order has been updated", order: updatedOrder });
+      .json({ message: "Order has been updated"}, updatedOrder);
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");

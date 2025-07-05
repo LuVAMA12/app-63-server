@@ -53,29 +53,3 @@ export const createOrFindUser = async ({
   }
 };
 
-export const updateUserByID = async (req, res) => {
-  const { id } = req.params;
-  const { firstName, lastName, email, phone } = req.body;
-  try {
-    const user = await User.findOne({
-      where: {
-        id,
-      },
-      attributes: { exclude: ["password", "forgotten_password"] },
-    });
-    if (!user) return res.status(404).json(" User not found");
-
-    const updatedUser = await user.update({
-      firstName: firstName || user.firstName,
-      lastName: lastName || user.lastName,
-      email: email || user.email,
-      phone: phone || user.phone,
-    });
-    const saveUser = await user.save();
-
-    return res.status(202).json(saveUser);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json("Internal server error");
-  }
-};

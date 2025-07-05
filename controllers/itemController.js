@@ -16,11 +16,7 @@ export const getAllItems = async (req, res) => {
 export const getItemByID = async (req, res) => {
     const { id } = req.params;
     try {
-        const item = await Item.findOne({
-        where: {
-            id,
-        },
-        });
+        const item = await Item.findByPk(id);
         if (!item) return res.status(404).json("Item not found ");
         return res.status(200).json(item);
     } catch (error) {
@@ -76,25 +72,19 @@ export const updateItemByID = async (req, res) => {
     const { id } = req.params;
     const { title, description, price, category, quantity } = req.body;
     try {
-        const item = await Item.findOne({
-        where: {
-            id,
-        },
-        attributes: { exclude: ["password", "forgotten_password"] },
-        });
+        const item = await Item.findByPk(id);
         if (!item) return res.status(404).json(" Item not found");
 
         const updatedItem = await item.update({
-        title: title || item.title,
-        description: description || item.description,
-        price: price || item.price,
-        category: category || item.category,
-        quantity: quantity || item.quantity,
+        title: title ?? item.title,
+        description: description ?? item.description,
+        price: price ?? item.price,
+        category: category ?? item.category,
+        quantity: quantity ?? item.quantity,
         image: req.file ? "images/" + req.file.filename : item.image,
         });
-        const saveItem = await item.save();
 
-        return res.status(202).json(saveItem);
+        return res.status(202).json(updatedItem);
     } catch (error) {
         console.log(error);
         return res.status(500).json("Internal server error");

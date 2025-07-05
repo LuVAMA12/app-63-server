@@ -53,28 +53,24 @@ export const updateTableByID = async (req, res) => {
   const { id } = req.params;
   const { capacity, numberTable, location } = req.body;
   try {
-    const reservedTable = await Reservation({
+    const reservedTable = await Reservation.findOne({
       where: {
         tableId: id,
       },
     });
-    if (!table) return res.status(404).json(" Table already reserved");
+    if (!reservedTable) return res.status(404).json("Unauthorized change: Table already reserved");
 
-    const table = await Table.findOne({
-      where: {
-        id,
-      },
-    });
+    const table = await Table.findByPk(id);
     if (!table) return res.status(404).json(" Table not found");
 
     const updatedTable = await table.update({
-      capacity: capacity || table.capacity,
-      numberTable: numberTable || table.numberTable,
-      location: location || table.location,
+      capacity: capacity ?? table.capacity,
+      numberTable: numberTable ?? table.numberTable,
+      location: location ?? table.location,
     });
-    const saveTable = await table.save();
 
-    return res.status(202).json(saveTable);
+
+    return res.status(202).json(updatedTable);
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");
