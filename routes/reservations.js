@@ -8,8 +8,8 @@ const reservationRouter = Router()
 
 reservationRouter.get("/reservations", verifyAdmin, checkAdminOrOwner, getAllReservations)
 reservationRouter.get("/reservations/:id",verifyAdmin, checkAdminOrOwner, getReservationByID)
-reservationRouter.post("/addReservation", validateFields(["timeSlotId", "numberOfPeople", "date"]), createReservation)
+reservationRouter.post("/addReservation", validateFields([ "firstName",  "lastName", "email", "phone","date","timeSlotId", "numberOfPeople","location" ]), createReservation)
 reservationRouter.delete("/reservations/:id",verifyAdmin, checkAdminOrOwner, deleteReservationByID)
-reservationRouter.patch("/reservations/:id",verifyAdmin, checkAdminOrOwner, requireAtLeastOneField(["timeSlotId", "tableId", "numberOfPeople", "firstName",  "lastName", "email", "phone",]), updateReservationByID)
+reservationRouter.patch("/reservations/:id",verifyAdmin, checkAdminOrOwner, requireAtLeastOneField(["firstName",  "lastName", "email", "phone","date","timeSlotId", "numberOfPeople","location" ]), updateReservationByID)
 
 export default reservationRouter

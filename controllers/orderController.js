@@ -137,7 +137,7 @@ export const updateOrderById = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "Order has been updated"}, updatedOrder);
+      .json({ message: "Order has been updated", updatedOrder });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");

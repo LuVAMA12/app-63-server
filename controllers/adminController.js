@@ -64,7 +64,7 @@ export const updateRoleByID = async (req, res) => {
     const updatedAdmin = await Admin.findByPk(id, {
       attributes: { exclude: ["password", "forgotten_password"] },
     });
-    return res.status(202).json({ message: "Admin has been updated" }, updatedAdmin);
+    return res.status(202).json({ message: "Admin has been updated", updatedAdmin });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");
@@ -94,7 +94,7 @@ export const updateAdminByID = async (req, res) => {
       where: { id },
       attributes: { exclude: ["password", "forgotten_password"] },
     });
-    return res.status(202).json({ message: "Admin has been updated" }, updatedAdmin);
+    return res.status(202).json({ message: "Admin has been updated" , updatedAdmin});
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");
