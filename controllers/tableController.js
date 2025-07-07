@@ -5,7 +5,8 @@ import Table from "../models/Table.js";
 
 export const getAllTables = async (req, res) => {
   try {
-    const tables = await Table.findAll();
+    const tables = await Table.findAll({
+      order: [["createdAt", "DESC"]]});
     if (!tables) return res.status(404).json("Table not found");
     return res.status(200).json(tables);
   } catch (error) {
@@ -79,7 +80,7 @@ export const updateTableByID = async (req, res) => {
     return res.status(500).json("Internal server error");
   }
 };
-export const getAvailableCapacitiesByDate = async (req, res) => {
+export const getMaxCapacityByDate = async (req, res) => {
   const { date, timeSlotId } = req.body;
 
   try {
@@ -110,14 +111,11 @@ export const getAvailableCapacitiesByDate = async (req, res) => {
       },
       raw: true,
     });
-    console.log(availableTables.length);
-    // we get the unique value into a set
-    const capacitiesSet = new Set(availableTables.map((t) => t.capacity));
 
-    //we transform into an array and sort in ascending order
-    const capacities = Array.from(capacitiesSet).sort((a, b) => a - b);
+    // we search the max capacity for this date and time slot
+   const maxCapacity = Math.max(...availableTables.map(t => t.capacity));
 
-    return res.status(200).json(capacities);
+    return res.status(200).json(maxCapacity);
   } catch (error) {
     console.error(error);
     return res.status(500).json("Internal server error");
@@ -128,17 +126,13 @@ export const getAvailablesLocations = async (req, res) => {
   const { date, timeSlotId, numberOfPeople } = req.body;
 
   try {
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
     //we find the tables reserved for this date and time slot
-    console.log(startOfDay, endOfDay);
     const reservedTables = await Reservation.findAll({
       attributes: ["tableId"],
       where: {
-        date,
+        [Op.and]: [
+          sequelize.where(sequelize.fn("DATE", sequelize.col("date")), date),
+        ],
         timeSlotId,
       },
       raw: true,
@@ -151,14 +145,14 @@ export const getAvailablesLocations = async (req, res) => {
       attributes: ["location"],
       where: {
         id: {
-          [Op.notIn]: reservedTableIds.length ? reservedTableIds : [0],
+          [Op.notIn]: reservedTableIds.length ? reservedTableIds : [1],
         },
         //we verify if the tables have capacities
         capacity: {
           [Op.gte]: numberOfPeople,
         },
       },
-      order: [["location", "ASC"]],
+      group: [["location", "ASC"]],
     });
     const locations = availableTables.map((t) => t.location);
 
@@ -173,17 +167,20 @@ export const searchAvailableTable = async ({
   timeSlotId,
   location,
   numberOfPeople,
+  date,
 }) => {
   try {
     const reserved = await Reservation.findAll({
       where: {
+        [Op.and]: [
+          sequelize.where(sequelize.fn("DATE", sequelize.col("date")), date),
+        ],
         timeSlotId,
       },
       attributes: ["tableId"],
     });
 
     const reservedTableIds = reserved.map((table) => table.tableId);
-
     const availableTable = await Table.findOne({
       where: {
         location,
@@ -196,10 +193,10 @@ export const searchAvailableTable = async ({
       },
       order: [["capacity", "ASC"]],
     });
+    
     if (!availableTable) {
       return null;
-    }
-
+    }    
     return availableTable.id;
   } catch (error) {
     console.log(error);

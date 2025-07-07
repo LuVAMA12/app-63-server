@@ -1,3 +1,5 @@
+import { Op } from "sequelize";
+import { sequelize } from "../database/db.js";
 import Reservation from "../models/Reservation.js";
 import Table from "../models/Table.js";
 import TimeSlot from "../models/TimeSlot.js";
@@ -22,7 +24,7 @@ export const getAllReservations = async (req, res) => {
           attributes: ["startTime", "endTime"],
         },
       ],
-      order: [["createdAt", "DESC"]],
+      order: [["date", "DESC"]],
     });
     if (!reservations) return res.status(404).json("Reservation not found");
     return res.status(200).json(reservations);
@@ -75,6 +77,9 @@ export const createReservation = async (req, res) => {
 
     const reservation = await Reservation.findOne({
       where: {
+        [Op.and]: [
+          sequelize.where(sequelize.fn("DATE", sequelize.col("date")), date),
+        ],
         timeSlotId,
         tableId,
       },
@@ -128,7 +133,7 @@ export const updateReservationByID = async (req, res) => {
     email,
     phone,
     location,
-    date
+    date,
   } = req.body;
   try {
     const reservation = await Reservation.findOne({
@@ -139,7 +144,7 @@ export const updateReservationByID = async (req, res) => {
     });
     if (!reservation) return res.status(404).json(" Reservation not found");
 
-    let updatedTableId;
+    let updatedTableId=reservation.tableId;
 
     if (timeSlotId || numberOfPeople || location) {
       const newTableId = await searchAvailableTable({
@@ -149,18 +154,16 @@ export const updateReservationByID = async (req, res) => {
       });
 
       if (!newTableId) {
-        return res
-          .status(400)
-          .json("Aucune table disponible pour les nouveaux critères");
+        return res.status(400).json("Aucune table disponible pour les nouveaux critères");
       }
-
+      
       updatedTableId = newTableId;
     }
 
     const reservationUpdate = await reservation.update({
       timeSlotId: timeSlotId ?? reservation.timeSlotId,
       date: date ?? reservation.date,
-      tableId: tableId ?? reservation.tableId,
+      tableId: updatedTableId,
       numberOfPeople: numberOfPeople ?? reservation.numberOfPeople,
     });
 
@@ -176,14 +179,27 @@ export const updateReservationByID = async (req, res) => {
 
     const updatedReservation = await Reservation.findOne({
       where: { id },
-      include: [{ model: User }],
+        include: [
+        {
+          model: User,
+          attributes: ["firstName", "lastName", "email", "phone"],
+        },
+        {
+          model: Table,
+          attributes: ["numberTable", "location", "capacity"],
+        },
+        {
+          model: TimeSlot,
+          attributes: ["startTime", "endTime"],
+        },
+      ],
     });
 
-    return res.status(202).json({ message: "Reservation has been updated",updatedReservation});
+    return res
+      .status(202)
+      .json({ message: "Reservation has been updated", updatedReservation });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");
   }
 };
-
-
