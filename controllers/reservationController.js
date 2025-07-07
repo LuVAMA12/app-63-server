@@ -72,9 +72,9 @@ export const createReservation = async (req, res) => {
     const tableId = await searchAvailableTable(req.body);
 
     if (!tableId) {
-      return res.status(400).json("No table available");
+      return res.status(200).json("No table available");
     }
-
+    
     const reservation = await Reservation.findOne({
       where: {
         [Op.and]: [
