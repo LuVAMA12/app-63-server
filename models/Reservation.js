@@ -32,6 +32,10 @@ const Reservation = sequelize.define("Reservation", {
         type: DataTypes.TINYINT(2),
         allowNull: false,
     },
+      date : {
+            type: DataTypes.DATE,
+            allowNull: false
+        },
     status: {
         type: DataTypes.ENUM,
         values: ["reserved", "awaiting", "confirmed"],

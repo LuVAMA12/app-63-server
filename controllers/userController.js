@@ -4,7 +4,7 @@ export const getAllUsers = async (req, res) => {
   try {
     //  We find and return all users in our db
     const users = await User.findAll();
-    if (users.length < 1) return res.status(404).json(`No user found yet`);
+    if (!users) return res.status(404).json("Reservation not found");
     return res.status(200).json(users);
   } catch (error) {
     console.log(error);
@@ -25,7 +25,12 @@ export const getUserByID = async (req, res) => {
   }
 };
 
-export const createOrFindUser = async ({ firstName, lastName, email, phone }) => {
+export const createOrFindUser = async ({
+  firstName,
+  lastName,
+  email,
+  phone,
+}) => {
   try {
     // We check if email is already used in the db
     let user = await User.findOne({
@@ -35,7 +40,7 @@ export const createOrFindUser = async ({ firstName, lastName, email, phone }) =>
     });
     if (user) {
       return user.id;
-    } 
+    }
     const newUser = await User.create({
       firstName,
       lastName,
@@ -48,30 +53,3 @@ export const createOrFindUser = async ({ firstName, lastName, email, phone }) =>
   }
 };
 
-
-export const updateUserByID = async (req, res) => {
-  const { id } = req.params;
-  const { firstName, lastName, email, phone } = req.body;
-  try {
-    const user = await User.findOne({
-      where: {
-        id,
-      },
-      attributes: { exclude: ["password", "forgotten_password"] },
-    });
-    if (!user) return res.status(404).json(" User not found");
-    
-    const updatedUser = await user.update({
-      firstName: firstName || user.firstName,
-      lastName: lastName || user.lastName,
-      email: email || user.email,
-      phone: phone || user.phone,
-    });
-    const saveUser = await user.save();
-    
-    return res.status(202).json(saveUser);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json("Internal server error");
-  }
-};

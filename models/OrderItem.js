@@ -31,6 +31,5 @@ const OrderItem = sequelize.define(
     },
 )
  
-
 export default sequelize.models.OrderItem
 
