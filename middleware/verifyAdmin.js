@@ -8,6 +8,7 @@ const verifyAdmin = async (req, res, next) => {
     const authorization = req.headers.authorization;
     if (!authorization) {
       const admins = await Admin.findAll();
+      console.log(admins)
       if (admins.length === 0) {
         return next();
       } else {
