@@ -34,7 +34,7 @@ In order to reduce site development time and boost performance, some front-end d
 
 ### BACK-END
 
-The back-end is created using the **Node.js** framework, which allows you to create a server in JavaScript.
+The back-end is created using the **Node.js v22.16.0** framework, which allows you to create a server in JavaScript.
 
 For the back-end, the application uses the dependencies: 
  - **express**: provides functions to simplify server creation;
